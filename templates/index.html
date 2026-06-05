@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hostel Management System</title>
+  <style>
+    :root { color-scheme: light; }
+    body { margin: 0; font-family: Arial, sans-serif; background: #f4f7fb; color: #183153; }
+    .page { max-width: 1200px; margin: 0 auto; padding: 24px; }
+    .hero { background: linear-gradient(135deg, #0f766e, #2563eb); color: white; border-radius: 18px; padding: 24px; box-shadow: 0 8px 24px rgba(15, 23, 42, 0.15); }
+    .hero h1 { margin: 0 0 8px; font-size: 2rem; }
+    .hero p { margin: 0; color: #dbeafe; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 18px 0; }
+    .card { background: white; border-radius: 16px; padding: 16px; box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08); }
+    .label { font-size: 0.92rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.08em; }
+    .value { font-size: 1.8rem; font-weight: 700; margin-top: 6px; }
+    .content { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 18px; }
+    .panel { background: white; border-radius: 16px; padding: 16px; box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+    th, td { text-align: left; padding: 10px; border-bottom: 1px solid #e5e7eb; }
+    th { color: #475569; background: #f8fafc; }
+    .badge { display: inline-block; padding: 4px 8px; border-radius: 999px; font-size: 0.85rem; font-weight: 700; }
+    .paid { background: #dcfce7; color: #166534; }
+    .pending { background: #fef3c7; color: #92400e; }
+    .available { background: #dbeafe; color: #1d4ed8; }
+    .occupied { background: #fee2e2; color: #b91c1c; }
+    form { display: grid; gap: 10px; }
+    input, select { width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid #cbd5e1; border-radius: 10px; font: inherit; }
+    button { background: #2563eb; color: white; border: 0; border-radius: 10px; padding: 10px 12px; font: inherit; font-weight: 700; cursor: pointer; }
+    button:hover { background: #1d4ed8; }
+    @media (max-width: 980px) { .content { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <h1>Hostel Management System</h1>
+      <p>Manage residents, rooms, and payments with this simple dashboard.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <div class="label">Residents</div>
+        <div class="value">{{ total_residents }}</div>
+      </article>
+      <article class="card">
+        <div class="label">Total Rooms</div>
+        <div class="value">{{ total_rooms }}</div>
+      </article>
+      <article class="card">
+        <div class="label">Occupied</div>
+        <div class="value">{{ occupied_rooms }}</div>
+      </article>
+      <article class="card">
+        <div class="label">Available</div>
+        <div class="value">{{ available_rooms }}</div>
+      </article>
+      <article class="card">
+        <div class="label">Monthly Fees</div>
+        <div class="value">₹{{ total_fee }}</div>
+      </article>
+    </section>
+
+    <section class="content">
+      <article class="panel">
+        <h2>Resident List</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Room</th>
+              <th>Fee</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for resident in residents %}
+            <tr>
+              <td>{{ resident.name }}</td>
+              <td>{{ resident.room }}</td>
+              <td>₹{{ resident.fee }}</td>
+              <td><span class="badge {{ 'paid' if resident.status == 'Paid' else 'pending' }}">{{ resident.status }}</span></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </article>
+
+      <article class="panel">
+        <h2>Add Resident</h2>
+        <form method="post">
+          <input type="text" name="name" placeholder="Resident name" required />
+          <input type="text" name="room" placeholder="Room number" required />
+          <input type="number" name="fee" placeholder="Monthly fee" min="0" value="4000" />
+          <select name="status">
+            <option value="Paid">Paid</option>
+            <option value="Pending">Pending</option>
+          </select>
+          <button type="submit">Add Resident</button>
+        </form>
+
+        <h2 style="margin-top: 18px;">Room Status</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Room</th>
+              <th>Type</th>
+              <th>Occupied</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for room in rooms %}
+            <tr>
+              <td>{{ room.number }}</td>
+              <td>{{ room.type }}</td>
+              <td>{{ room.occupied }}/{{ room.capacity }}</td>
+              <td><span class="badge {{ 'available' if room.status == 'Available' else 'occupied' }}">{{ room.status }}</span></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </article>
+    </section>
+  </main>
+</body>
+</html>
